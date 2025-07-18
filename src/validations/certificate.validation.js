@@ -11,9 +11,15 @@ const createCertificate = {
     credentialUrl: Joi.string().uri().allow(''),
     imageUrl: Joi.string().uri().allow(''),
     description: Joi.string().allow(''),
-    featured: Joi.boolean(),
-    order: Joi.number(),
-  }),
+    featured: Joi.alternatives().try(
+      Joi.boolean(),
+      Joi.string().valid('true', 'false')
+    ),
+    order: Joi.alternatives().try(
+      Joi.number(),
+      Joi.string().pattern(/^\d+$/)
+    ),
+  }).unknown(true), // Allow unknown fields for multipart/form-data
 };
 
 const updateCertificate = {
@@ -29,9 +35,15 @@ const updateCertificate = {
     credentialUrl: Joi.string().uri().allow(''),
     imageUrl: Joi.string().uri().allow(''),
     description: Joi.string().allow(''),
-    featured: Joi.boolean(),
-    order: Joi.number(),
-  }).min(1),
+    featured: Joi.alternatives().try(
+      Joi.boolean(),
+      Joi.string().valid('true', 'false')
+    ),
+    order: Joi.alternatives().try(
+      Joi.number(),
+      Joi.string().pattern(/^\d+$/)
+    ),
+  }).min(1).unknown(true), // Allow unknown fields for multipart/form-data
 };
 
 const getCertificate = {

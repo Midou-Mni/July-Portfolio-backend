@@ -1,5 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const httpStatus = require('http-status');
+const path = require('path');
+const fs = require('fs');
 const Certificate = require('../models/certificate.model');
 
 /**
@@ -64,6 +66,20 @@ const getCertificate = asyncHandler(async (req, res) => {
  * @access Private/Admin
  */
 const createCertificate = asyncHandler(async (req, res) => {
+  // Handle image file upload
+  if (req.file) {
+    // If file was uploaded, set imageUrl to the file path
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    req.body.imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
+  }
+  
+  // Convert boolean fields
+  if (req.body.featured === 'true') req.body.featured = true;
+  if (req.body.featured === 'false') req.body.featured = false;
+  
+  // Convert numeric fields
+  if (req.body.order) req.body.order = Number(req.body.order);
+  
   const certificate = await Certificate.create(req.body);
   
   res.status(httpStatus.CREATED).json({
@@ -84,6 +100,30 @@ const updateCertificate = asyncHandler(async (req, res) => {
     res.status(httpStatus.NOT_FOUND);
     throw new Error('Certificate not found');
   }
+  
+  // Handle image file upload
+  if (req.file) {
+    // If a new file was uploaded, delete the old one if it exists
+    if (certificate.imageUrl && certificate.imageUrl.includes('/uploads/')) {
+      const oldFilePath = certificate.imageUrl.split('/uploads/')[1];
+      const fullPath = path.join(__dirname, '../../uploads', oldFilePath);
+      
+      if (fs.existsSync(fullPath)) {
+        fs.unlinkSync(fullPath);
+      }
+    }
+    
+    // Set the new image URL
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    req.body.imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
+  }
+  
+  // Convert boolean fields
+  if (req.body.featured === 'true') req.body.featured = true;
+  if (req.body.featured === 'false') req.body.featured = false;
+  
+  // Convert numeric fields
+  if (req.body.order) req.body.order = Number(req.body.order);
   
   const updatedCertificate = await Certificate.findByIdAndUpdate(
     req.params.certificateId,
@@ -108,6 +148,16 @@ const deleteCertificate = asyncHandler(async (req, res) => {
   if (!certificate) {
     res.status(httpStatus.NOT_FOUND);
     throw new Error('Certificate not found');
+  }
+  
+  // Delete the certificate image file if it exists
+  if (certificate.imageUrl && certificate.imageUrl.includes('/uploads/')) {
+    const filePath = certificate.imageUrl.split('/uploads/')[1];
+    const fullPath = path.join(__dirname, '../../uploads', filePath);
+    
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+    }
   }
   
   await certificate.deleteOne();

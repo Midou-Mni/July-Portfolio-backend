@@ -173,7 +173,7 @@ Response:
 POST /projects
 ```
 
-Request body:
+Request body (JSON):
 ```json
 {
   "title": "Portfolio Website",
@@ -186,6 +186,22 @@ Request body:
 }
 ```
 
+Request body (Multipart Form Data with Image Upload):
+```
+Content-Type: multipart/form-data
+
+title: Portfolio Website
+description: My personal portfolio website built with React and Node.js
+technologies[0]: React
+technologies[1]: Node.js
+technologies[2]: Express
+technologies[3]: MongoDB
+liveUrl: https://myportfolio.com
+githubUrl: https://github.com/username/portfolio
+featured: true
+image: [File]
+```
+
 Response:
 ```json
 {
@@ -195,7 +211,7 @@ Response:
     "title": "Portfolio Website",
     "description": "My personal portfolio website built with React and Node.js",
     "technologies": ["React", "Node.js", "Express", "MongoDB"],
-    "imageUrl": "https://example.com/portfolio.jpg",
+    "imageUrl": "http://localhost:5000/uploads/image-1752849544354-539126337.png",
     "liveUrl": "https://myportfolio.com",
     "githubUrl": "https://github.com/username/portfolio",
     "featured": true,
@@ -212,12 +228,21 @@ Response:
 PUT /projects/:projectId
 ```
 
-Request body:
+Request body (JSON):
 ```json
 {
   "title": "Updated Portfolio Website",
   "featured": false
 }
+```
+
+Request body (Multipart Form Data with Image Upload):
+```
+Content-Type: multipart/form-data
+
+title: Updated Portfolio Website
+featured: false
+image: [File]
 ```
 
 Response:
@@ -229,7 +254,7 @@ Response:
     "title": "Updated Portfolio Website",
     "description": "My personal portfolio website built with React and Node.js",
     "technologies": ["React", "Node.js", "Express", "MongoDB"],
-    "imageUrl": "https://example.com/portfolio.jpg",
+    "imageUrl": "http://localhost:5000/uploads/image-1752849544354-539126337.png",
     "liveUrl": "https://myportfolio.com",
     "githubUrl": "https://github.com/username/portfolio",
     "featured": false,
@@ -422,20 +447,34 @@ Response:
 POST /certificates
 ```
 
-Request body:
+Request body (JSON):
 ```json
 {
-  "title": "AWS Certified Solutions Architect",
-  "issuer": "Amazon Web Services",
-  "issueDate": "2023-01-15",
-  "expiryDate": "2026-01-15",
+  "title": "React Developer Certificate",
+  "issuer": "Meta",
+  "issueDate": "2023-01-15T00:00:00.000Z",
+  "expiryDate": "2026-01-15T00:00:00.000Z",
   "credentialId": "ABC123456",
-  "credentialUrl": "https://aws.amazon.com/verification/123456",
+  "credentialUrl": "https://example.com/verify/ABC123456",
   "imageUrl": "https://example.com/certificate.jpg",
-  "description": "Professional level certification for AWS architecture",
-  "featured": true,
-  "order": 1
+  "description": "Professional certification for React development",
+  "featured": true
 }
+```
+
+Request body (Multipart Form Data with Image Upload):
+```
+Content-Type: multipart/form-data
+
+title: React Developer Certificate
+issuer: Meta
+issueDate: 2023-01-15T00:00:00.000Z
+expiryDate: 2026-01-15T00:00:00.000Z
+credentialId: ABC123456
+credentialUrl: https://example.com/verify/ABC123456
+description: Professional certification for React development
+featured: true
+image: [File]
 ```
 
 Response:
@@ -444,16 +483,16 @@ Response:
   "success": true,
   "data": {
     "_id": "60d21b4667d0d8992e610c85",
-    "title": "AWS Certified Solutions Architect",
-    "issuer": "Amazon Web Services",
+    "title": "React Developer Certificate",
+    "issuer": "Meta",
     "issueDate": "2023-01-15T00:00:00.000Z",
     "expiryDate": "2026-01-15T00:00:00.000Z",
     "credentialId": "ABC123456",
-    "credentialUrl": "https://aws.amazon.com/verification/123456",
-    "imageUrl": "https://example.com/certificate.jpg",
-    "description": "Professional level certification for AWS architecture",
+    "credentialUrl": "https://example.com/verify/ABC123456",
+    "imageUrl": "http://localhost:5000/uploads/image-1752849544354-539126337.png",
+    "description": "Professional certification for React development",
     "featured": true,
-    "order": 1,
+    "order": 0,
     "createdAt": "2023-07-15T12:00:00.000Z",
     "updatedAt": "2023-07-15T12:00:00.000Z"
   }
@@ -466,12 +505,21 @@ Response:
 PUT /certificates/:certificateId
 ```
 
-Request body:
+Request body (JSON):
 ```json
 {
-  "title": "Updated Certificate Title",
+  "title": "Updated React Developer Certificate",
   "featured": false
 }
+```
+
+Request body (Multipart Form Data with Image Upload):
+```
+Content-Type: multipart/form-data
+
+title: Updated React Developer Certificate
+featured: false
+image: [File]
 ```
 
 Response:
@@ -480,16 +528,16 @@ Response:
   "success": true,
   "data": {
     "_id": "60d21b4667d0d8992e610c85",
-    "title": "Updated Certificate Title",
-    "issuer": "Amazon Web Services",
+    "title": "Updated React Developer Certificate",
+    "issuer": "Meta",
     "issueDate": "2023-01-15T00:00:00.000Z",
     "expiryDate": "2026-01-15T00:00:00.000Z",
     "credentialId": "ABC123456",
-    "credentialUrl": "https://aws.amazon.com/verification/123456",
-    "imageUrl": "https://example.com/certificate.jpg",
-    "description": "Professional level certification for AWS architecture",
+    "credentialUrl": "https://example.com/verify/ABC123456",
+    "imageUrl": "http://localhost:5000/uploads/image-1752849544354-539126337.png",
+    "description": "Professional certification for React development",
     "featured": false,
-    "order": 1,
+    "order": 0,
     "createdAt": "2023-07-15T12:00:00.000Z",
     "updatedAt": "2023-07-15T12:00:00.000Z"
   }

@@ -3,6 +3,7 @@ const { validate } = require('../middleware/validate.middleware');
 const projectValidation = require('../validations/project.validation');
 const projectController = require('../controllers/project.controller');
 const { protect, admin } = require('../middleware/auth.middleware');
+const upload = require('../middleware/upload.middleware');
 
 const router = express.Router();
 
@@ -29,6 +30,10 @@ router.post(
   '/',
   protect,
   admin,
+  upload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'additionalImages', maxCount: 10 }
+  ]),
   validate(projectValidation.createProject),
   projectController.createProject
 );
@@ -42,6 +47,10 @@ router.put(
   '/:projectId',
   protect,
   admin,
+  upload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'additionalImages', maxCount: 10 }
+  ]),
   validate(projectValidation.updateProject),
   projectController.updateProject
 );
@@ -57,6 +66,48 @@ router.delete(
   admin,
   validate(projectValidation.deleteProject),
   projectController.deleteProject
+);
+
+/**
+ * @route POST /api/projects/:projectId/images
+ * @desc Add additional images to a project
+ * @access Private/Admin
+ */
+router.post(
+  '/:projectId/images',
+  protect,
+  admin,
+  upload.fields([
+    { name: 'additionalImages', maxCount: 10 }
+  ]),
+  validate(projectValidation.addProjectImages),
+  projectController.addProjectImages
+);
+
+/**
+ * @route DELETE /api/projects/:projectId/images/:imageIndex
+ * @desc Remove an image from a project
+ * @access Private/Admin
+ */
+router.delete(
+  '/:projectId/images/:imageIndex',
+  protect,
+  admin,
+  validate(projectValidation.removeProjectImage),
+  projectController.removeProjectImage
+);
+
+/**
+ * @route PUT /api/projects/:projectId/images/reorder
+ * @desc Reorder project images
+ * @access Private/Admin
+ */
+router.put(
+  '/:projectId/images/reorder',
+  protect,
+  admin,
+  validate(projectValidation.reorderProjectImages),
+  projectController.reorderProjectImages
 );
 
 module.exports = router; 

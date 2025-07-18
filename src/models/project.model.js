@@ -22,6 +22,10 @@ const projectSchema = mongoose.Schema(
     imageUrl: {
       type: String,
     },
+    // Add support for multiple images
+    additionalImages: [{
+      type: String,
+    }],
     liveUrl: {
       type: String,
     },
@@ -62,6 +66,21 @@ projectSchema.methods.getAverageRating = async function () {
   
   const sum = reviews.reduce((total, review) => total + review.rating, 0);
   return (sum / reviews.length).toFixed(1);
+};
+
+// Method to get all images (main image + additional images)
+projectSchema.methods.getAllImages = function() {
+  const images = [];
+  
+  if (this.imageUrl) {
+    images.push(this.imageUrl);
+  }
+  
+  if (this.additionalImages && this.additionalImages.length > 0) {
+    images.push(...this.additionalImages);
+  }
+  
+  return images;
 };
 
 const Project = mongoose.model('Project', projectSchema);

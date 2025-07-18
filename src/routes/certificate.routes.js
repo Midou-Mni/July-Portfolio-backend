@@ -3,6 +3,7 @@ const { validate } = require('../middleware/validate.middleware');
 const certificateValidation = require('../validations/certificate.validation');
 const certificateController = require('../controllers/certificate.controller');
 const { protect, admin } = require('../middleware/auth.middleware');
+const upload = require('../middleware/upload.middleware');
 
 const router = express.Router();
 
@@ -33,6 +34,7 @@ router.post(
   '/',
   protect,
   admin,
+  upload.single('image'), // Handle single image upload
   validate(certificateValidation.createCertificate),
   certificateController.createCertificate
 );
@@ -46,6 +48,7 @@ router.put(
   '/:certificateId',
   protect,
   admin,
+  upload.single('image'), // Handle single image upload
   validate(certificateValidation.updateCertificate),
   certificateController.updateCertificate
 );

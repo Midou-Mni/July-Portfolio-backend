@@ -11,7 +11,7 @@ This guide provides step-by-step instructions for testing the Portfolio API usin
    - `Portfolio_API.postman_environment.json`
 
 3. Set up your environment variables:
-   - `base_url`: Your API base URL (default: `http://localhost:5000/api`)
+   - `base_url`: Your API base URL (default: `http://localhost:4000/api`)
    - `token`: Will be automatically set after login
 
 ## Testing Workflow
@@ -55,7 +55,7 @@ This guide provides step-by-step instructions for testing the Portfolio API usin
 
 ### 2. Projects API
 
-#### Create Project
+#### Create Project with JSON
 
 1. Open the `Projects > Create Project` request
 2. Set the request body:
@@ -74,6 +74,49 @@ This guide provides step-by-step instructions for testing the Portfolio API usin
 4. Verify you receive a 201 Created response with the project details
 5. Save the project ID for later use
 
+#### Create Project with Image Upload
+
+1. Open the `Projects > Create Project with Image` request
+2. Set the request body type to `form-data`
+3. Add the following key-value pairs:
+   - `title`: Portfolio Website with Image
+   - `description`: My personal portfolio website built with React and Node.js
+   - `technologies[0]`: React
+   - `technologies[1]`: Node.js
+   - `technologies[2]`: Express
+   - `technologies[3]`: MongoDB
+   - `liveUrl`: https://myportfolio.com
+   - `githubUrl`: https://github.com/username/portfolio
+   - `featured`: true
+   - `image`: [Select an image file from your computer]
+4. For the `image` field, make sure to select "File" type in Postman
+5. Send the request
+6. Verify you receive a 201 Created response with the project details
+7. Note the `imageUrl` in the response, which should point to the uploaded file
+8. Save the project ID for later use
+
+#### Add Additional Images to Project
+
+1. Open the `Projects > Add Project Images` request
+2. Replace `:projectId` in the URL with the ID of the project you created
+3. Set the request body type to `form-data`
+4. Add the following key-value pairs:
+   - `additionalImages`: [Select an image file from your computer]
+   - `additionalImages`: [Select another image file from your computer]
+5. For the `additionalImages` fields, make sure to select "File" type in Postman
+6. Send the request
+7. Verify you receive a 200 OK response with the project details
+8. Note the `additionalImages` array in the response, which should contain the URLs of the uploaded files
+
+#### Remove Project Image
+
+1. Open the `Projects > Remove Project Image` request
+2. Replace `:projectId` in the URL with the ID of the project you created
+3. Replace `:imageIndex` in the URL with the index of the image you want to remove (e.g., `0` for the first additional image)
+4. Send the request
+5. Verify you receive a 200 OK response with the project details
+6. Note that the specified image has been removed from the `additionalImages` array
+
 #### Get All Projects
 
 1. Open the `Projects > Get All Projects` request
@@ -86,24 +129,27 @@ This guide provides step-by-step instructions for testing the Portfolio API usin
 2. Replace `:projectId` in the URL with the ID of the project you created
 3. Send the request
 4. Verify you receive a 200 OK response with the project details
+5. Note that the response includes an `allImages` array containing all project images (main image + additional images)
 
-#### Update Project
+#### Update Project with Image Upload
 
-1. Open the `Projects > Update Project` request
+1. Open the `Projects > Update Project with Image` request
 2. Replace `:projectId` in the URL with the ID of the project you created
-3. Set the request body with the fields you want to update:
-   ```json
-   {
-     "title": "Updated Portfolio Website",
-     "featured": false
-   }
-   ```
-4. Send the request
-5. Verify you receive a 200 OK response with the updated project details
+3. Set the request body type to `form-data`
+4. Add the following key-value pairs:
+   - `title`: Updated Portfolio Website
+   - `featured`: false
+   - `image`: [Select a different image file from your computer]
+   - `additionalImages`: [Select an image file from your computer]
+   - `replaceAllImages`: true (optional, set to replace all existing additional images)
+5. For the image fields, make sure to select "File" type in Postman
+6. Send the request
+7. Verify you receive a 200 OK response with the updated project details
+8. Note that the `imageUrl` should now point to the newly uploaded image
 
 ### 3. Certificates API
 
-#### Create Certificate
+#### Create Certificate (JSON)
 
 1. Open the `Certificates > Create Certificate` request
 2. Set the request body:
@@ -125,6 +171,26 @@ This guide provides step-by-step instructions for testing the Portfolio API usin
 4. Verify you receive a 201 Created response with the certificate details
 5. Save the certificate ID for later use
 
+#### Create Certificate with Image Upload
+
+1. Open the `Certificates > Create Certificate with Image` request
+2. Set the request body type to `form-data`
+3. Add the following key-value pairs:
+   - `title`: React Developer Certificate
+   - `issuer`: Meta
+   - `issueDate`: 2023-01-15
+   - `expiryDate`: 2026-01-15
+   - `credentialId`: ABC123456
+   - `credentialUrl`: https://example.com/verify/ABC123456
+   - `description`: Professional certification for React development
+   - `featured`: true
+   - `image`: [Select an image file from your computer]
+4. For the `image` field, make sure to select "File" type in Postman
+5. Send the request
+6. Verify you receive a 201 Created response with the certificate details
+7. Note the `imageUrl` in the response, which should point to the uploaded file
+8. Save the certificate ID for later use
+
 #### Get All Certificates
 
 1. Open the `Certificates > Get All Certificates` request
@@ -138,19 +204,19 @@ This guide provides step-by-step instructions for testing the Portfolio API usin
 3. Send the request
 4. Verify you receive a 200 OK response with the certificate details
 
-#### Update Certificate
+#### Update Certificate with Image Upload
 
-1. Open the `Certificates > Update Certificate` request
+1. Open the `Certificates > Update Certificate with Image` request
 2. Replace `:certificateId` in the URL with the ID of the certificate you created
-3. Set the request body with the fields you want to update:
-   ```json
-   {
-     "title": "Updated Certificate Title",
-     "featured": false
-   }
-   ```
-4. Send the request
-5. Verify you receive a 200 OK response with the updated certificate details
+3. Set the request body type to `form-data`
+4. Add the following key-value pairs:
+   - `title`: Updated Certificate Title
+   - `featured`: false
+   - `image`: [Select a different image file from your computer]
+5. For the `image` field, make sure to select "File" type in Postman
+6. Send the request
+7. Verify you receive a 200 OK response with the updated certificate details
+8. Note that the `imageUrl` should now point to the newly uploaded image
 
 #### Delete Certificate
 
@@ -176,6 +242,7 @@ This guide provides step-by-step instructions for testing the Portfolio API usin
 3. Replace `project_id_here` with the ID of the project you created
 4. Send the request
 5. Verify you receive a 201 Created response with the review details
+6. Save the review ID for later use
 
 #### Get Reviews by Project
 
@@ -188,8 +255,10 @@ This guide provides step-by-step instructions for testing the Portfolio API usin
 
 1. Open the `Reviews > Delete Review` request
 2. Replace `:reviewId` in the URL with the ID of the review you created
-3. Send the request
-4. Verify you receive a 200 OK response confirming the review was deleted
+3. Ensure the Authorization header is set with the admin token
+4. Send the request
+5. Verify you receive a 200 OK response confirming the review was deleted
+6. Verify the review is no longer returned when getting reviews by project
 
 ### 5. Testing Error Handling
 
@@ -203,14 +272,12 @@ This guide provides step-by-step instructions for testing the Portfolio API usin
 1. Try to create a project with missing required fields
 2. Verify you receive a 400 Bad Request response with validation error details
 
-#### Rate Limiting
+#### Not Found Errors
 
-1. Try to submit multiple reviews for the same project from the same IP address
-2. Verify that after a few attempts, you receive a rate limit error response
+1. Try to get a project with a non-existent ID
+2. Verify you receive a 404 Not Found response
 
-## Troubleshooting
+#### Permission Errors
 
-- **401 Unauthorized**: Check that your token is valid and properly set in the Authorization header
-- **404 Not Found**: Verify that the resource ID you're using exists
-- **400 Bad Request**: Check your request body for validation errors
-- **500 Server Error**: Check the server logs for more details 
+1. Try to delete a review with a non-admin user token
+2. Verify you receive a 403 Forbidden response 
