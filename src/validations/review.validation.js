@@ -7,6 +7,12 @@ const createReview = {
     name: Joi.string().allow(''),
     rating: Joi.number().min(1).max(5).required(),
     comment: Joi.string().required(),
+    contact: Joi.object().keys({
+      email: Joi.string().email().allow(''),
+      whatsapp: Joi.string().pattern(/^\+?[\d\s\-\(\)]{10,}$/).allow(''),
+      instagram: Joi.string().pattern(/^[a-zA-Z0-9._]{1,30}$/).allow(''),
+      facebook: Joi.string().pattern(/^[a-zA-Z0-9.]{5,50}$/).allow(''),
+    }).allow({}),
   }),
 };
 

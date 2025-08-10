@@ -9,7 +9,8 @@ const Project = require('../models/project.model');
  * @access Public
  */
 const createReview = asyncHandler(async (req, res) => {
-  const { project: projectId, rating, comment, name } = req.body;
+  console.log('Received review data:', req.body);
+  const { project: projectId, rating, comment, name, contact } = req.body;
 
   // Check if project exists
   const project = await Project.findById(projectId);
@@ -34,6 +35,7 @@ const createReview = asyncHandler(async (req, res) => {
     rating,
     comment,
     name: name || 'Anonymous',
+    contact: contact || {},
     ipAddress,
   });
 
