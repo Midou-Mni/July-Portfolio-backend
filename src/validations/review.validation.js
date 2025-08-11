@@ -18,10 +18,11 @@ const createReview = {
 
 const getReviews = {
   query: Joi.object().keys({
-    projectId: Joi.string().custom(objectId).required(),
+    projectId: Joi.string().custom(objectId),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
+    featured: Joi.boolean(),
   }),
 };
 

@@ -46,18 +46,20 @@ const createReview = asyncHandler(async (req, res) => {
 });
 
 /**
- * Get reviews by project
+ * Get reviews by project or all reviews
  * @route GET /api/reviews
  * @access Public
  */
 const getReviews = asyncHandler(async (req, res) => {
-  const { projectId, limit = 10, page = 1, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
+  const { projectId, limit = 10, page = 1, sortBy = 'createdAt', sortOrder = 'desc', featured = false } = req.query;
 
-  // Check if project exists
-  const project = await Project.findById(projectId);
-  if (!project) {
-    res.status(httpStatus.NOT_FOUND);
-    throw new Error('Project not found');
+  // If projectId is provided, check if project exists
+  if (projectId) {
+    const project = await Project.findById(projectId);
+    if (!project) {
+      res.status(httpStatus.NOT_FOUND);
+      throw new Error('Project not found');
+    }
   }
 
   const sort = {};
@@ -69,8 +71,19 @@ const getReviews = asyncHandler(async (req, res) => {
     skip: (parseInt(page, 10) - 1) * parseInt(limit, 10),
   };
 
-  const reviews = await Review.find({ project: projectId }, null, options);
-  const total = await Review.countDocuments({ project: projectId });
+  // Build query based on parameters
+  let query = {};
+  if (projectId) {
+    query.project = projectId;
+  }
+  
+  // If featured is requested, get only 5-star reviews
+  if (featured === 'true') {
+    query.rating = 5;
+  }
+
+  const reviews = await Review.find(query, null, options).populate('project', 'title imageUrl');
+  const total = await Review.countDocuments(query);
 
   res.json({
     success: true,
